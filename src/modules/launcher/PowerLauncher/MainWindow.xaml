@@ -75,13 +75,13 @@
             <ListView
                 x:Name="KeywordsOverviewListView"
                 Grid.Row="1"
+                IsVisibleChanged="KeywordsOverviewListView_IsVisibleChanged"
                 ItemContainerStyle="{StaticResource PluginsListViewItemStyle}"
                 ItemsSource="{Binding Plugins}"
-                SelectedItem="{Binding SelectedPlugin, Mode=TwoWay}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                SelectionMode="Single"
-                IsVisibleChanged="KeywordsOverviewListView_IsVisibleChanged">
+                SelectedItem="{Binding SelectedPlugin, Mode=TwoWay}"
+                SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="36">
