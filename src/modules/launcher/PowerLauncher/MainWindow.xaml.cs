@@ -485,26 +485,12 @@ namespace PowerLauncher
             {
                 if (e.Key == Key.Up)
                 {
-                    _viewModel.SelectPrevOverviewPluginCommand.Execute(null);
-                    KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
+                    SelectPrevOverviewPlugin();
                     e.Handled = true;
                 }
                 else if (e.Key == Key.Down)
                 {
-                    _viewModel.SelectNextOverviewPluginCommand.Execute(null);
-                    KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
-                    e.Handled = true;
-                }
-                else if (e.Key == Key.Tab && (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-                {
-                    _viewModel.SelectPrevOverviewPluginCommand.Execute(null);
-                    KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
-                    e.Handled = true;
-                }
-                else if (e.Key == Key.Tab)
-                {
-                    _viewModel.SelectNextOverviewPluginCommand.Execute(null);
-                    KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
+                    SelectNextOverviewPlugin();
                     e.Handled = true;
                 }
             }
@@ -830,6 +816,58 @@ namespace PowerLauncher
             if (KeywordsOverviewListView.Items.Count > 0)
             {
                 KeywordsOverviewListView.ScrollIntoView(KeywordsOverviewListView.Items[0]);
+            }
+        }
+
+        private void KeywordsOverviewListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                QuerySelectedPlugin();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Up)
+            {
+                SelectPrevOverviewPlugin();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Down)
+            {
+                SelectNextOverviewPlugin();
+                e.Handled = true;
+            }
+        }
+
+        private void KeywordsOverviewListView_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            QuerySelectedPlugin();
+        }
+
+        private void SelectPrevOverviewPlugin()
+        {
+            _viewModel.SelectPrevOverviewPluginCommand.Execute(null);
+            KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
+            var listViewItem = KeywordsOverviewListView.ItemContainerGenerator.ContainerFromItem(_viewModel.SelectedPlugin) as ListViewItem;
+            listViewItem?.Focus();
+        }
+
+        private void SelectNextOverviewPlugin()
+        {
+            _viewModel.SelectNextOverviewPluginCommand.Execute(null);
+            KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
+            var listViewItem = KeywordsOverviewListView.ItemContainerGenerator.ContainerFromItem(_viewModel.SelectedPlugin) as ListViewItem;
+            listViewItem?.Focus();
+        }
+
+        private void QuerySelectedPlugin()
+        {
+            if (_viewModel.SelectedPlugin != null)
+            {
+                // Needed to update UI in case the user choose the same plugin multiple times
+                _viewModel.ChangeQueryText(string.Empty);
+
+                _viewModel.ChangeQueryText(_viewModel.SelectedPlugin.Metadata.ActionKeyword);
+                SearchBox.QueryTextBox.Focus();
             }
         }
     }

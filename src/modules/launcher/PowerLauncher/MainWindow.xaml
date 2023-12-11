@@ -81,7 +81,9 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectedItem="{Binding SelectedPlugin, Mode=TwoWay}"
-                SelectionMode="Single">
+                SelectionMode="Single"
+                KeyDown="KeywordsOverviewListView_KeyDown"
+                PreviewMouseLeftButtonUp="KeywordsOverviewListView_PreviewMouseLeftButtonUp">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="36">
