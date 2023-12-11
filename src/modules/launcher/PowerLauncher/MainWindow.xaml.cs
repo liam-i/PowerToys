@@ -481,66 +481,96 @@ namespace PowerLauncher
 
         private void Launcher_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Tab && (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
+            if (_viewModel.PluginsOverviewVisibility == Visibility.Visible)
             {
-                _viewModel.SelectPrevTabItemCommand.Execute(null);
-                UpdateTextBoxToSelectedItem();
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Tab)
-            {
-                _viewModel.SelectNextTabItemCommand.Execute(null);
-                UpdateTextBoxToSelectedItem();
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Down)
-            {
-                _viewModel.SelectNextItemCommand.Execute(null);
-                UpdateTextBoxToSelectedItem();
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Up)
-            {
-                _viewModel.SelectPrevItemCommand.Execute(null);
-                UpdateTextBoxToSelectedItem();
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Right)
-            {
-                if (SearchBox.QueryTextBox.CaretIndex == SearchBox.QueryTextBox.Text.Length)
+                if (e.Key == Key.Up)
                 {
-                    _viewModel.SelectNextContextMenuItemCommand.Execute(null);
+                    _viewModel.SelectPrevOverviewPluginCommand.Execute(null);
+                    KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Down)
+                {
+                    _viewModel.SelectNextOverviewPluginCommand.Execute(null);
+                    KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Tab && (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
+                {
+                    _viewModel.SelectPrevOverviewPluginCommand.Execute(null);
+                    KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Tab)
+                {
+                    _viewModel.SelectNextOverviewPluginCommand.Execute(null);
+                    KeywordsOverviewListView.ScrollIntoView(_viewModel.SelectedPlugin);
                     e.Handled = true;
                 }
             }
-            else if (e.Key == Key.Left)
+            else
             {
-                if (SearchBox.QueryTextBox.CaretIndex == SearchBox.QueryTextBox.Text.Length)
+                if (e.Key == Key.Tab && (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
                 {
-                    if (_viewModel.Results != null && _viewModel.Results.IsContextMenuItemSelected())
+                    _viewModel.SelectPrevTabItemCommand.Execute(null);
+                    UpdateTextBoxToSelectedItem();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Tab)
+                {
+                    _viewModel.SelectNextTabItemCommand.Execute(null);
+                    UpdateTextBoxToSelectedItem();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Down)
+                {
+                    _viewModel.SelectNextItemCommand.Execute(null);
+                    UpdateTextBoxToSelectedItem();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Up)
+                {
+                    _viewModel.SelectPrevItemCommand.Execute(null);
+                    UpdateTextBoxToSelectedItem();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Right)
+                {
+                    if (SearchBox.QueryTextBox.CaretIndex == SearchBox.QueryTextBox.Text.Length)
                     {
-                        _viewModel.SelectPreviousContextMenuItemCommand.Execute(null);
+                        _viewModel.SelectNextContextMenuItemCommand.Execute(null);
                         e.Handled = true;
                     }
                 }
-            }
-            else if (e.Key == Key.PageDown)
-            {
-                _viewModel.SelectNextPageCommand.Execute(null);
-                e.Handled = true;
-            }
-            else if (e.Key == Key.PageUp)
-            {
-                _viewModel.SelectPrevPageCommand.Execute(null);
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Back)
-            {
-                _deletePressed = true;
-            }
-            else
-            {
-                _viewModel.HandleContextMenu(e.Key, Keyboard.Modifiers);
+                else if (e.Key == Key.Left)
+                {
+                    if (SearchBox.QueryTextBox.CaretIndex == SearchBox.QueryTextBox.Text.Length)
+                    {
+                        if (_viewModel.Results != null && _viewModel.Results.IsContextMenuItemSelected())
+                        {
+                            _viewModel.SelectPreviousContextMenuItemCommand.Execute(null);
+                            e.Handled = true;
+                        }
+                    }
+                }
+                else if (e.Key == Key.PageDown)
+                {
+                    _viewModel.SelectNextPageCommand.Execute(null);
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.PageUp)
+                {
+                    _viewModel.SelectPrevPageCommand.Execute(null);
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Back)
+                {
+                    _deletePressed = true;
+                }
+                else
+                {
+                    _viewModel.HandleContextMenu(e.Key, Keyboard.Modifiers);
+                }
             }
         }
 
@@ -792,6 +822,15 @@ namespace PowerLauncher
             }
 
             _hwndSource = null;
+        }
+
+        private void KeywordsOverviewListView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            _viewModel.SelectedPlugin = null;
+            if (KeywordsOverviewListView.Items.Count > 0)
+            {
+                KeywordsOverviewListView.ScrollIntoView(KeywordsOverviewListView.Items[0]);
+            }
         }
     }
 }

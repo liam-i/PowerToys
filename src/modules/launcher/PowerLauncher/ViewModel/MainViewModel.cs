@@ -299,6 +299,16 @@ namespace PowerLauncher.ViewModel
                     OnPropertyChanged(nameof(SystemQueryText));
                 }
             });
+
+            SelectNextOverviewPluginCommand = new RelayCommand(_ =>
+            {
+                SelectNextOverviewPlugin();
+            });
+
+            SelectPrevOverviewPluginCommand = new RelayCommand(_ =>
+            {
+                SelectPrevOverviewPlugin();
+            });
         }
 
         private ResultsViewModel _results;
@@ -467,6 +477,10 @@ namespace PowerLauncher.ViewModel
         public ICommand OpenResultWithMouseCommand { get; private set; }
 
         public ICommand ClearQueryCommand { get; private set; }
+
+        public ICommand SelectNextOverviewPluginCommand { get; private set; }
+
+        public ICommand SelectPrevOverviewPluginCommand { get; private set; }
 
         public class QueryTuningOptions
         {
@@ -1207,6 +1221,22 @@ namespace PowerLauncher.ViewModel
 
         public ObservableCollection<PluginPair> Plugins { get; } = new();
 
+        private PluginPair _selectedPlugin;
+
+        public PluginPair SelectedPlugin
+        {
+            get => _selectedPlugin;
+
+            set
+            {
+                if (_selectedPlugin != value)
+                {
+                    _selectedPlugin = value;
+                    OnPropertyChanged(nameof(SelectedPlugin));
+                }
+            }
+        }
+
         private Visibility _pluginsOverviewVisibility = Visibility.Visible;
 
         public Visibility PluginsOverviewVisibility
@@ -1236,6 +1266,54 @@ namespace PowerLauncher.ViewModel
                     Plugins.Add(p);
                 }
             });
+        }
+
+        private void SelectNextOverviewPlugin()
+        {
+            if (Plugins.Count == 0)
+            {
+                return;
+            }
+
+            int selectedIndex;
+            if (SelectedPlugin == null)
+            {
+                selectedIndex = 0;
+            }
+            else
+            {
+                selectedIndex = Plugins.IndexOf(SelectedPlugin);
+                if (++selectedIndex > Plugins.Count - 1)
+                {
+                    selectedIndex = 0;
+                }
+            }
+
+            SelectedPlugin = Plugins[selectedIndex];
+        }
+
+        private void SelectPrevOverviewPlugin()
+        {
+            if (Plugins.Count == 0)
+            {
+                return;
+            }
+
+            int selectedIndex;
+            if (SelectedPlugin == null)
+            {
+                selectedIndex = Plugins.Count - 1;
+            }
+            else
+            {
+                selectedIndex = Plugins.IndexOf(SelectedPlugin);
+                if (--selectedIndex < 0)
+                {
+                    selectedIndex = Plugins.Count - 1;
+                }
+            }
+
+            SelectedPlugin = Plugins[selectedIndex];
         }
     }
 }
